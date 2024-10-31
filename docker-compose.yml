@@ -1,0 +1,17 @@
+services:
+  storage-service:
+    container_name: storage-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    ports:
+      - "8002:8002"
+    volumes:
+      - .:/app
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
