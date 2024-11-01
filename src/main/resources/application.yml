@@ -4,6 +4,13 @@ spring:
   application:
     name: storage-service
 
+storage:
+  endpoint: https://f357ce60dd0bac92a7b2edf066d55d61.r2.cloudflarestorage.com/contafacil-dev
+  access-key: 2ff438901d34787c4c9b8b00f6f629c9
+  secret-key: 071f14cb23761aab633fb6fff8fbd20ec590d297ce97b1a6d11cff2baf4d348b
+  bucket-name: contafacil-dev
+  region: us-east-1
+
 eureka:
   client:
     service-url:
