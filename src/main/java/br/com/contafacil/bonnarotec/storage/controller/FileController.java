@@ -1,11 +1,15 @@
 package br.com.contafacil.bonnarotec.storage.controller;
 
+import br.com.contafacil.bonnarotec.storage.domain.file.BatchDownloadSchema;
 import br.com.contafacil.bonnarotec.storage.domain.file.FileDownloadDTO;
 import br.com.contafacil.bonnarotec.storage.domain.file.FileEntity;
 import br.com.contafacil.bonnarotec.storage.service.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -33,8 +37,8 @@ public class FileController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FileEntity> upload(
             @Parameter(description = "Arquivo a ser enviado")
-            @RequestParam("file")MultipartFile file
-            ) throws Exception {
+            @RequestParam("file") @NotNull MultipartFile file
+            ) {
         FileEntity fileEntity = storageService.upload(file);
         return ResponseEntity.status(HttpStatus.CREATED).body(fileEntity);
     }
@@ -46,13 +50,30 @@ public class FileController {
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource> download(
             @Parameter(description = "ID do arquivo")
-            @PathVariable UUID id
-    ) throws Exception {
+            @PathVariable @NotNull UUID id
+    ) {
         FileDownloadDTO download = storageService.download(id);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(download.contentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + download.filename() + "\"")
                 .body(new ByteArrayResource(download.data()));
+    }
+
+    @Operation(
+            summary = "Download de arquivos em lote",
+            description = "Realiza o download de arquivos em lote e retorna um zip através de um identificador"
+    )
+    @PostMapping("/download/batch")
+    public ResponseEntity<Resource> batchDownload(
+            @Parameter(description = "Lista de IDs para download")
+            @Valid @RequestBody BatchDownloadSchema downloadDTO
+    ) {
+       ByteArrayResource zipResource = storageService.downloadBatch(downloadDTO.fileIds());
+
+       return ResponseEntity.ok()
+               .contentType(MediaType.APPLICATION_OCTET_STREAM)
+               .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"files.zip\"")
+               .body(zipResource);
     }
 }

@@ -1,5 +1,8 @@
 package br.com.contafacil.bonnarotec.storage.config;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -34,6 +37,14 @@ public class OpenAPIConfig {
                         new Server()
                                 .url(gatewayUrl + "/cfstorage")
                                 .description("Gateway URL")
-                ));
+                ))
+                .components(new Components()
+                        .addSecuritySchemes("bearer-token",
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")))
+                .addSecurityItem(new SecurityRequirement()
+                        .addList("bearer-token"));
     }
 }
