@@ -1,11 +1,11 @@
 package br.com.contafacil.bonnarotec.storage.service;
 
 import br.com.contafacil.bonnarotec.storage.domain.file.FileDownloadDTO;
-import br.com.contafacil.bonnarotec.storage.domain.file.FileEntity;
 import br.com.contafacil.bonnarotec.storage.domain.file.FileRepository;
 import br.com.contafacil.bonnarotec.storage.exception.FileDownloadException;
 import br.com.contafacil.bonnarotec.storage.exception.FileNotFoundException;
 import br.com.contafacil.bonnarotec.storage.exception.FileUploadException;
+import br.com.contafacil.shared.bonnarotec.toolslib.domain.file.FileEntity;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;

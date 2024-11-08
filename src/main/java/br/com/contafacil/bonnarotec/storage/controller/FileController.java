@@ -2,13 +2,12 @@ package br.com.contafacil.bonnarotec.storage.controller;
 
 import br.com.contafacil.bonnarotec.storage.domain.file.BatchDownloadSchema;
 import br.com.contafacil.bonnarotec.storage.domain.file.FileDownloadDTO;
-import br.com.contafacil.bonnarotec.storage.domain.file.FileEntity;
 import br.com.contafacil.bonnarotec.storage.service.StorageService;
+import br.com.contafacil.shared.bonnarotec.toolslib.domain.file.FileEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;

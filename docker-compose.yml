@@ -9,6 +9,7 @@ services:
       - "8002:8002"
     volumes:
       - .:/app
+      - ./settings.xml:/root/.m2/settings.xml
     depends_on:
       - minio_storage
       - db_storage
