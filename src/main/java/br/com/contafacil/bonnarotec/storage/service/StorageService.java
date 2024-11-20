@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -101,11 +103,24 @@ public class StorageService {
     public ByteArrayResource downloadBatch(List<UUID> ids) throws FileDownloadException, FileNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ZipOutputStream zipOut = new ZipOutputStream(baos)) {
+            Map<String, Integer> fileNameCountMap = new HashMap<>();
+
             for (UUID id : ids) {
                 FileDownloadDTO download = this.download(id);
 
                 if (download.data() != null) {
-                    ZipEntry zipEntry = new ZipEntry(download.filename());
+                    String originalFileName = download.filename();
+                    String fileName = originalFileName;
+
+                    if (fileNameCountMap.containsKey(originalFileName)) {
+                        int count = fileNameCountMap.get(originalFileName);
+                        fileName = addSuffixToFileName(originalFileName, count);
+                        fileNameCountMap.put(originalFileName, count + 1);
+                    } else {
+                        fileNameCountMap.put(originalFileName, 1);
+                    }
+
+                    ZipEntry zipEntry = new ZipEntry(fileName);
                     zipOut.putNextEntry(zipEntry);
                     zipOut.write(download.data());
                     zipOut.closeEntry();
@@ -118,6 +133,17 @@ public class StorageService {
         }
 
         return new ByteArrayResource(baos.toByteArray());
+    }
+
+    private String addSuffixToFileName(String fileName, int count) {
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex == -1) {
+            return fileName + "(" + count + ")";
+        } else {
+            String namePart = fileName.substring(0, lastDotIndex);
+            String extensionPart = fileName.substring(lastDotIndex);
+            return namePart + "(" + count + ")" + extensionPart;
+        }
     }
 
     private String generatePath(UUID id, String filename) {
